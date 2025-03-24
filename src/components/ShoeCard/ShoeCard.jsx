@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import { WEIGHTS } from '../../constants';
 import { formatPrice, pluralize, isNewShoe } from '../../utils';
@@ -36,20 +36,16 @@ const ShoeCard = ({
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
-          {variant === 'on-sale' && <SaleFlag>Sale</SaleFlag>}
-          {variant === 'new-release' && (
-            <NewFlag>Just released!</NewFlag>
-          )}
         </ImageWrapper>
+        {variant === 'on-sale' && <SaleFlag>Sale</SaleFlag>}
+        {variant === 'new-release' && <NewFlag>Just released!</NewFlag>}
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
           <Price
             style={{
               '--color':
-                variant === 'on-sale'
-                  ? 'var(--color-gray-700)'
-                  : undefined,
+                variant === 'on-sale' ? 'var(--color-gray-700)' : undefined,
               '--text-decoration':
                 variant === 'on-sale' ? 'line-through' : undefined,
             }}
@@ -73,15 +69,29 @@ const Link = styled.a`
   color: inherit;
 `;
 
-const Wrapper = styled.article``;
-
-const ImageWrapper = styled.div`
+const Wrapper = styled.article`
   position: relative;
 `;
 
-const Image = styled.img`
-  width: 100%;
+const ImageWrapper = styled.div`
+  overflow: hidden;
   border-radius: 16px 16px 4px 4px;
+`;
+
+const Image = styled.img`
+  display: block;
+  width: 100%;
+  transform-origin: 50% 75%;
+  transition: transform 600ms;
+  will-change: transform;
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    ${Link}:hover &,
+    ${Link}:focus & {
+      transform: scale(1.1);
+      transition: transform 200ms;
+    }
+  }
 `;
 
 const Row = styled.div`
@@ -109,6 +119,17 @@ const SalePrice = styled.span`
   color: var(--color-primary);
 `;
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+`;
+
 const Flag = styled.div`
   position: absolute;
   top: 12px;
@@ -121,6 +142,8 @@ const Flag = styled.div`
   font-weight: ${WEIGHTS.bold};
   color: var(--color-white);
   border-radius: 2px;
+
+  animation: ${fadeIn} 500ms ease-in forwards;
 `;
 
 const SaleFlag = styled(Flag)`
