@@ -2,57 +2,52 @@ import React from 'react';
 import styled from 'styled-components';
 import { WEIGHTS } from '../../constants';
 
-const FlipNavLink = ({ children, ...delegated }) => {
+const FlipNavLink = ({ href, children }) => {
   return (
-    <Wrapper {...delegated}>
-      <MainText>{children}</MainText>
-      <HoverText aria-hidden={true}>{children}</HoverText>
-    </Wrapper>
+    <FlipLinkWrapper href={href} aria-label={`Link to ${children}`}>
+      <FlipLinkContent data-hover={children}>
+        <span>{children}</span>
+      </FlipLinkContent>
+    </FlipLinkWrapper>
   );
 };
 
-const Wrapper = styled.a`
-  position: relative;
-  display: block;
-  font-size: 1.125rem;
+const FlipLinkWrapper = styled.a`
+  line-height: 44px;
+  perspective: 1000px;
   text-transform: uppercase;
   text-decoration: none;
   color: var(--color-gray-900);
   font-weight: ${WEIGHTS.medium};
-  overflow: hidden;
 
   &:first-of-type {
     color: var(--color-secondary);
   }
 `;
 
-const Text = styled.span`
-  display: block;
-  transform: translateY(var(--translate-from));
-  transition: transform 500ms;
+const FlipLinkContent = styled.span`
+  font-size: 1.125rem;
+  position: relative;
+  display: inline-block;
+  padding: 0 14px;
+  transition: transform 0.3s;
+  transform-origin: 50% 0;
+  transform-style: preserve-3d;
 
-  @media (prefers-reduced-motion: no-preference) {
-    ${Wrapper}:hover & {
-      transition: transform 250ms;
-      transform: translateY(var(--translate-to));
-    }
+  &::before {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    height: 100%;
+    content: attr(data-hover);
+    transform: rotateX(-90deg);
+    transform-origin: 100% 0;
+  }
+
+  ${FlipLinkWrapper}:hover &,
+  ${FlipLinkWrapper}:focus & {
+    transform: rotateX(90deg) translateY(-20px);
   }
 `;
 
-const MainText = styled(Text)`
-  --translate-from: 0%;
-  --translate-to: -100%;
-`;
-
-const HoverText = styled(Text)`
-  --translate-from: 100%;
-  --translate-to: 0%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  font-weight: ${WEIGHTS.bold};
-`;
-
-export default React.memo(FlipNavLink);
+export default FlipNavLink;
