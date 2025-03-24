@@ -2,48 +2,57 @@ import React from 'react';
 import styled from 'styled-components';
 import { WEIGHTS } from '../../constants';
 
-const FlipNavLink = ({ href, children }) => {
+const FlipNavLink = ({ children, ...delegated }) => {
   return (
-    <SlideLinkWrapper href={href}>
-      <SlideLinkContent data-hover={children}>
-        <span>{children}</span>
-      </SlideLinkContent>
-    </SlideLinkWrapper>
+    <Wrapper {...delegated}>
+      <MainText>{children}</MainText>
+      <HoverText aria-hidden={true}>{children}</HoverText>
+    </Wrapper>
   );
 };
 
-const SlideLinkWrapper = styled.a`
-  overflow: hidden;
-  padding: 0 4px;
-  height: 1.2em;
+const Wrapper = styled.a`
+  position: relative;
+  display: block;
   font-size: 1.125rem;
+  text-transform: uppercase;
   text-decoration: none;
   color: var(--color-gray-900);
   font-weight: ${WEIGHTS.medium};
-  text-transform: uppercase;
+  overflow: hidden;
 
   &:first-of-type {
     color: var(--color-secondary);
   }
 `;
 
-const SlideLinkContent = styled.span`
-  position: relative;
-  display: inline-block;
-  transition: transform 0.3s;
+const Text = styled.span`
+  display: block;
+  transform: translateY(var(--translate-from));
+  transition: transform 500ms;
 
-  &::before {
-    position: absolute;
-    top: 100%;
-    content: attr(data-hover);
-    font-weight: ${WEIGHTS.bold};
-    transform: translate3d(0, 0, 0);
+  @media (prefers-reduced-motion: no-preference) {
+    ${Wrapper}:hover & {
+      transition: transform 250ms;
+      transform: translateY(var(--translate-to));
+    }
   }
+`;
 
-  ${SlideLinkWrapper}:hover &,
-  ${SlideLinkWrapper}:focus & {
-    transform: translateY(-100%);
-  }
+const MainText = styled(Text)`
+  --translate-from: 0%;
+  --translate-to: -100%;
+`;
+
+const HoverText = styled(Text)`
+  --translate-from: 100%;
+  --translate-to: 0%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-weight: ${WEIGHTS.bold};
 `;
 
 export default React.memo(FlipNavLink);
