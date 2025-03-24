@@ -17,13 +17,11 @@ const MobileMenu = ({ isOpen, onDismiss }) => {
           <InnerWrapper>
             <CloseButton onClick={onDismiss}>
               <Icon id="close" />
-              <VisuallyHidden>Dismiss menu</VisuallyHidden>
+              <VisuallyHidden>Close menu</VisuallyHidden>
             </CloseButton>
             <VisuallyHidden>
-              <Dialog.Title>Mobile navigation</Dialog.Title>
-              <Dialog.Description>
-                Mobile navigation
-              </Dialog.Description>
+              <Dialog.Title>Mobile Navigation</Dialog.Title>
+              <Dialog.Description>Mobile navigation menu</Dialog.Description>
             </VisuallyHidden>
             <Filler />
             <Nav>
@@ -54,6 +52,7 @@ const fadeIn = keyframes`
     opacity: 1;
   }
 `;
+
 const slideIn = keyframes`
   from {
     transform: translateX(100%);
@@ -126,6 +125,7 @@ const NavLink = styled.a`
 const Filler = styled.div`
   flex: 1;
 `;
+
 const Footer = styled.footer`
   flex: 1;
   display: flex;
